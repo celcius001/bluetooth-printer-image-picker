@@ -1,3 +1,4 @@
+import 'package:agmm_v3/download.dart';
 import 'package:blue_thermal_printer/blue_thermal_printer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -111,6 +112,7 @@ class _PrintState extends State<Print> {
             child: Text(isConnected ? "Disconnect" : "Connect"),
           ),
           ElevatedButton(onPressed: _print, child: const Text("Print")),
+          Download(),
         ],
       ),
     );
