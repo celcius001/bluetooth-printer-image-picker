@@ -16,12 +16,28 @@ class _ImageCaptureState extends State<ImageCapture> {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   TextEditingController searchController = TextEditingController();
   String? _searchImagePath;
+  String? _searchImageId;
   bool isSearching = false;
+  List<Map<String, dynamic>> imageRecord = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImages();
+  }
+
+  Future<void> _loadImages() async {
+    List<Map<String, dynamic>> images = await _dbHelper.getImages();
+    setState(() {
+      imageRecord = images;
+    });
+  }
 
   Future<void> _captureImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.camera);
     if (image != null) {
       await _dbHelper.insertImage(image.path);
+      _loadImages();
       setState(() {
         _searchImagePath = image.path;
         isSearching = true;
@@ -40,8 +56,10 @@ class _ImageCaptureState extends State<ImageCapture> {
     }
 
     String? foundPath = await _dbHelper.getImageById(int.parse(path));
+    String? foundId = await _dbHelper.getImageName(int.parse(path));
     setState(() {
       _searchImagePath = foundPath;
+      _searchImageId = foundId;
       isSearching = true;
     });
   }
@@ -75,7 +93,13 @@ class _ImageCaptureState extends State<ImageCapture> {
             Expanded(
               child: Padding(
                 padding: EdgeInsets.all(8.0),
-                child: Image.file(File(_searchImagePath!)),
+                child: Column(
+                  children: [
+                    Text("Name: $_searchImageId"),
+                    SizedBox(width: 10),
+                    Expanded(child: (Image.file(File(_searchImagePath!)))),
+                  ],
+                ),
               ),
             )
           else if (isSearching)

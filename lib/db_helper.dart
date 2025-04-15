@@ -24,7 +24,7 @@ class DatabaseHelper {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-          "CREATE TABLE $_tableName (id INTEGER PRIMARY KEY, path TEXT)",
+          "CREATE TABLE $_tableName (id INTEGER PRIMARY KEY, name TEXT, path TEXT)",
         );
       },
     );
@@ -38,6 +38,12 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getImages() async {
     final db = await database;
     return await db.query(_tableName);
+  }
+
+  Future<String?> getImageName(int id) async {
+    final db = await database;
+    final result = await db.query(_tableName, where: "id = ?", whereArgs: [id]);
+    return result.isNotEmpty ? result.first["name"].toString() : null;
   }
 
   Future<String?> getImageById(int id) async {
