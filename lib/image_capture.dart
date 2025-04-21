@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:agmm_v3/db_helper.dart';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -41,6 +42,18 @@ class _ImageCaptureState extends State<ImageCapture> {
       setState(() {
         _searchImagePath = image.path;
         isSearching = true;
+      });
+    }
+  }
+
+  Future<void> _updateImage() async {
+    String id = searchController.text.trim();
+    final XFile? image = await _picker.pickImage(source: ImageSource.camera);
+    if (image != null) {
+      await _dbHelper.updateImage(id, image.path);
+      _loadImages();
+      setState(() {
+        _searchImagePath = image.path;
       });
     }
   }
@@ -98,6 +111,13 @@ class _ImageCaptureState extends State<ImageCapture> {
                     Text("Name: $_searchImageId"),
                     SizedBox(width: 10),
                     Expanded(child: (Image.file(File(_searchImagePath!)))),
+                    SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        _updateImage();
+                      },
+                      child: Text("Update Image"),
+                    ),
                   ],
                 ),
               ),

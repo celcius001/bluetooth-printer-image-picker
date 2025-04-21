@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Print extends StatefulWidget {
-  const Print({super.key});
+  const Print(Future<void> Function() searchByPath, {super.key});
 
   @override
   State<Print> createState() => _PrintState();

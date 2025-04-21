@@ -35,6 +35,16 @@ class DatabaseHelper {
     return await db.insert(_tableName, {"path": path});
   }
 
+  Future<int> updateImage(String id, String path) async {
+    final db = await database;
+    return await db.update(
+      _tableName,
+      {"path": path},
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
   Future<List<Map<String, dynamic>>> getImages() async {
     final db = await database;
     return await db.query(_tableName);
